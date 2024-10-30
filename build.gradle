@@ -1,0 +1,43 @@
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+}
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11  // Use VERSION_1_8 for Java 8
+    targetCompatibility = JavaVersion.VERSION_11  // Use VERSION_1_8 for Java 8
+}
+
+tasks.withType(JavaCompile) {
+    options.release.set(11)  // Set to 8 if you're targeting Java 8
+}
+
+shadowJar {
+    archiveBaseName.set("${project.name}-all")
+    archiveClassifier.set("")
+    archiveVersion.set("${version}")
+
+    manifest {
+        attributes 'Main-Class': 'org.example.Main'  // Replace with your main class
+    }
+}
+
+
+dependencies {
+    implementation 'redis.clients:jedis:5.2.0'
+    implementation 'org.apache.flink:flink-java:1.20.0'
+    implementation 'org.apache.flink:flink-streaming-java:1.20.0'
+    testImplementation platform('org.junit:junit-bom:5.9.1')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+test {
+    useJUnitPlatform()
+}

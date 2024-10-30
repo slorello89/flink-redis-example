@@ -1,0 +1,29 @@
+version: "2.2"
+services:
+  jobmanager:
+    image: flink:latest
+    container_name: jobmanager
+    ports:
+      - "8081:8081"
+    command: jobmanager
+    environment:
+      - |
+        FLINK_PROPERTIES=
+        jobmanager.rpc.address: jobmanager
+  taskmanager:
+    image: flink:latest
+    container_name: taskmanager
+    depends_on:
+      - jobmanager
+      - redis
+    command: taskmanager
+    scale: 1
+    environment:
+      - |
+        FLINK_PROPERTIES=
+        jobmanager.rpc.address: jobmanager
+        taskmanager.numberOfTaskSlots: 2
+  redis:
+    image: redis/redis-stack-server
+    ports:
+      - "6379:6379"
